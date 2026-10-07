@@ -540,7 +540,13 @@ async function loadData() {
 
     try {
 
-        const response = await fetch("/data");
+const response = await fetch("/api/data");
+
+console.log("Status:", response.status);
+console.log("Content-Type:", response.headers.get("content-type"));
+
+const text = await response.text();
+console.log("Server response:", text);
 
         if (!response.ok) {
 
