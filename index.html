@@ -1,99 +1,309 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Excel Upload</title>
+    <title>Case Information</title>
 
-    https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.jsscript>
-
+https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js
+    
     <style>
         body {
             font-family: Arial, sans-serif;
-            padding: 30px;
+            padding: 20px;
         }
 
-        table {
-            border-collapse: collapse;
+        .container {
+            border: 1px dashed #ccc;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        select, input[type=file] {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background: #0078d4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .card {
+            background: #f3f3f3;
+            border-left: 5px solid #0078d4;
+            padding: 20px;
             margin-top: 20px;
         }
 
-        th, td {
-            border: 1px solid #ccc;
-            padding: 8px;
-        }
-
-        th {
-            background: #0078d4;
-            color: white;
+        label {
+            font-weight: bold;
         }
     </style>
 </head>
+
 <body>
 
-<h2>Excel Upload Test</h2>
+<h1>Case Information</h1>
 
-<input type="file" id="excelFile" accept=".xlsx,.xls">
+<div class="container">
 
-<div id="output"></div>
+    <h3>Upload Case Master Data</h3>
+
+    <input type="file" id="fileInput" accept=".xlsx,.xls">
+
+    <button onclick="loadExcel()">
+        Upload Data
+    </button>
+
+    <p id="status"></p>
+
+</div>
+
+<div>
+
+    <label>Case Reason</label>
+
+    <select id="caseReason">
+        <option value="">--None--</option>
+    </select>
+
+    <label>Vehicle Type</label>
+
+    <select id="vehicleType">
+        <option value="">--None--</option>
+    </select>
+
+    <label>Sub Case Reason</label>
+
+    <select id="subCase">
+        <option value="">--None--</option>
+    </select>
+
+</div>
+
+<div class="card">
+
+    <h2>Selected Values</h2>
+
+    <p id="selectedValues">
+        No Selection
+    </p>
+
+</div>
 
 <script>
 
-document.getElementById("excelFile").addEventListener("change", function (e) {
+let excelData = [];
 
-    const file = e.target.files[0];
+function loadExcel() {
 
-    if (!file) return;
+    const file =
+        document.getElementById("fileInput").files[0];
+
+    if (!file) {
+        alert("Select Excel File");
+        return;
+    }
 
     const reader = new FileReader();
 
-    reader.onload = function (event) {
+    reader.onload = function(e) {
 
-        const data = new Uint8Array(event.target.result);
+        const data = new Uint8Array(e.target.result);
 
-        const workbook = XLSX.read(data, {
-            type: "array"
-        });
+        const workbook =
+            XLSX.read(data, { type: 'array' });
 
-        const firstSheet =
+        const sheet =
             workbook.Sheets[workbook.SheetNames[0]];
 
-        const jsonData =
-            XLSX.utils.sheet_to_json(firstSheet, {
-                header: 1
-            });
+        excelData =
+            XLSX.utils.sheet_to_json(sheet);
 
-        renderTable(jsonData);
+        populateCaseReason();
+
+        document.getElementById("status").innerHTML =
+            "Data loaded successfully";
     };
 
     reader.readAsArrayBuffer(file);
+}
 
+function populateCaseReason() {
+
+    let caseDropdown =
+        document.getElementById("caseReason");
+
+    caseDropdown.innerHTML =
+        '<option value="">--None--</option>';
+
+    let cases =
+        [...new Set(excelData.map(x => x["Case Reason"]))];
+
+    cases.forEach(c => {
+
+        let opt =
+            document.createElement("option");
+
+        opt.value = c;
+        opt.text = c;
+
+        caseDropdown.appendChild(opt);
+    });
+}
+
+document
+.getElementById("caseReason")
+.addEventListener("change", function () {
+
+    const caseReason = this.value;
+
+    const vehicleDropdown =
+        document.getElementById("vehicleType");
+
+    vehicleDropdown.innerHTML =
+        '<option value="">--None--</option>';
+
+    const vehicleRequiredCases = [
+
+        "Technical inquiry",
+        "Diagnostics & Software",
+        "Cross Reference / Replacement"
+
+    ];
+
+    let rows;
+
+    if (vehicleRequiredCases.includes(caseReason)) {
+
+        rows =
+          excelData.filter(
+            x => x["Case Reason"] === caseReason
+          );
+
+        let vehicles = [
+          ...new Set(rows.map(
+            x => x["Vehicle Type"]
+          ))
+        ];
+
+        vehicles.forEach(v => {
+
+            let opt =
+              document.createElement("option");
+
+            opt.value = v;
+            opt.text = v;
+
+            vehicleDropdown.appendChild(opt);
+        });
+    }
+    else {
+
+        populateSubCaseWithoutVehicle(caseReason);
+    }
+
+    updateSelection();
 });
 
-function renderTable(data) {
+document
+.getElementById("vehicleType")
+.addEventListener("change", function () {
 
-    let html = "<table>";
+    let caseReason =
+      document.getElementById("caseReason").value;
 
-    data.forEach((row, index) => {
+    let vehicle =
+      this.value;
 
-        html += "<tr>";
+    let subDropdown =
+      document.getElementById("subCase");
 
-        row.forEach(cell => {
+    subDropdown.innerHTML =
+      '<option value="">--None--</option>';
 
-            if (index === 0) {
-                html += `<th>${cell ?? ""}</th>`;
-            } else {
-                html += `<td>${cell ?? ""}</td>`;
-            }
+    let rows =
+      excelData.filter(
+        x =>
+        x["Case Reason"] === caseReason &&
+        x["Vehicle Type"] === vehicle
+      );
 
-        });
+    let subs =
+      [...new Set(rows.map(
+        x => x["Sub Case Reason"]
+      ))];
 
-        html += "</tr>";
+    subs.forEach(s => {
+
+        let opt =
+          document.createElement("option");
+
+        opt.value = s;
+        opt.text = s;
+
+        subDropdown.appendChild(opt);
     });
 
-    html += "</table>";
+    updateSelection();
+});
 
-    document.getElementById("output").innerHTML = html;
+function populateSubCaseWithoutVehicle(caseReason) {
+
+    let subDropdown =
+      document.getElementById("subCase");
+
+    subDropdown.innerHTML =
+      '<option value="">--None--</option>';
+
+    let rows =
+      excelData.filter(
+        x => x["Case Reason"] === caseReason
+      );
+
+    let subs =
+      [...new Set(rows.map(
+        x => x["Sub Case Reason"]
+      ))];
+
+    subs.forEach(s => {
+
+        let opt =
+          document.createElement("option");
+
+        opt.value = s;
+        opt.text = s;
+
+        subDropdown.appendChild(opt);
+    });
+}
+
+document
+.getElementById("subCase")
+.addEventListener("change", updateSelection);
+
+function updateSelection() {
+
+    const caseReason =
+        document.getElementById("caseReason").value;
+
+    const vehicle =
+        document.getElementById("vehicleType").value;
+
+    const subCase =
+        document.getElementById("subCase").value;
+
+    document.getElementById("selectedValues")
+        .innerHTML =
+
+        "<b>Case Reason:</b> " + caseReason +
+        "<br><b>Vehicle Type:</b> " + vehicle +
+        "<br><b>Sub Case Reason:</b> " + subCase;
 }
 
 </script>
