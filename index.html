@@ -1,1241 +1,310 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
+    <title>Case Information</title>
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>ZF Case Management</title>
+    https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.jsscript>
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
         body {
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            background: #f4f6f9;
-            color: #181818;
+            font-family: Arial, sans-serif;
+            padding: 20px;
         }
-
-        /* =========================
-           HEADER
-        ========================== */
-
-        .header {
-            background: #032d60;
-            color: white;
-            padding: 16px 30px;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        /* =========================
-           MAIN CONTAINER
-        ========================== */
 
         .container {
-            max-width: 950px;
-            margin: 35px auto;
-            padding: 0 15px;
-        }
-
-        /* =========================
-           CARD
-        ========================== */
-
-        .card {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,.15);
-            padding: 28px;
-        }
-
-        .title {
-            font-size: 22px;
-            font-weight: bold;
-            margin-bottom: 25px;
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 30px;
+            border: 1px dashed #ccc;
+            padding: 20px;
             margin-bottom: 20px;
         }
 
-        /* =========================
-           FORM
-        ========================== */
+        select, input[type=file] {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            margin-bottom: 20px;
+        }
 
-        .field {
-            margin-bottom: 24px;
+        button {
+            background: #0078d4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .card {
+            background: #f3f3f3;
+            border-left: 5px solid #0078d4;
+            padding: 20px;
+            margin-top: 20px;
         }
 
         label {
-            display: block;
-            font-size: 13px;
-            margin-bottom: 7px;
-            color: #444;
-            font-weight: 600;
+            font-weight: bold;
         }
-
-        select,
-        input[type="text"] {
-
-            width: 100%;
-            height: 42px;
-
-            border: 1px solid #c9c9c9;
-            border-radius: 4px;
-
-            padding: 0 12px;
-
-            font-size: 14px;
-            background: white;
-        }
-
-        select:focus,
-        input[type="text"]:focus {
-
-            outline: none;
-
-            border-color: #0176d3;
-
-            box-shadow: 0 0 3px #0176d3;
-        }
-
-        /* =========================
-           BUTTON
-        ========================== */
-
-        .button {
-
-            background: #0176d3;
-
-            color: white;
-
-            border: none;
-
-            border-radius: 4px;
-
-            padding: 10px 20px;
-
-            cursor: pointer;
-
-            font-size: 14px;
-
-            transition: background .2s;
-        }
-
-        .button:hover {
-            background: #014486;
-        }
-
-        .button:disabled {
-            background: #999;
-            cursor: not-allowed;
-        }
-
-        /* =========================
-           UPLOAD
-        ========================== */
-
-        .upload-area {
-
-            background: #f8f9fb;
-
-            border: 1px dashed #aaa;
-
-            padding: 18px;
-
-            margin-bottom: 30px;
-
-            border-radius: 5px;
-        }
-
-        input[type="file"] {
-
-            width: 100%;
-
-            padding: 10px;
-
-            border: 1px solid #ccc;
-
-            border-radius: 4px;
-
-            background: white;
-        }
-
-        /* =========================
-           STATUS
-        ========================== */
-
-        .status {
-
-            margin-top: 12px;
-
-            font-size: 13px;
-
-            color: #2e844a;
-        }
-
-        .status.error {
-
-            color: #ba0517;
-        }
-
-        /* =========================
-           RESULT
-        ========================== */
-
-        .result {
-
-            margin-top: 25px;
-
-            background: #f3f3f3;
-
-            padding: 18px;
-
-            border-radius: 5px;
-
-            border-left: 4px solid #0176d3;
-        }
-
-        .result p {
-            line-height: 1.8;
-            margin-bottom: 0;
-        }
-
-        /* =========================
-           DIVIDER
-        ========================== */
-
-        .divider {
-
-            border: 0;
-
-            border-top: 1px solid #ddd;
-
-            margin: 35px 0;
-        }
-
-        /* =========================
-           RESPONSIVE
-        ========================== */
-
-        @media (max-width: 600px) {
-
-            .header {
-                padding: 14px 18px;
-                font-size: 18px;
-            }
-
-            .container {
-                margin-top: 20px;
-            }
-
-            .card {
-                padding: 20px;
-            }
-
-        }
-
     </style>
-
 </head>
 
 <body>
 
-<!-- =====================================================
-     HEADER
-====================================================== -->
-
-<div class="header">
-
-    ZF Case Management
-
-</div>
-
-
-<!-- =====================================================
-     MAIN
-====================================================== -->
+<h1>Case Information</h1>
 
 <div class="container">
 
-    <div class="card">
+    <h3>Upload Case Master Data</h3>
 
-        <div class="title">
+    <input type="file" id="fileInput" accept=".xlsx,.xls">
 
-            Case Information
+    <button onclick="loadExcel()">
+        Upload Data
+    </button>
 
-        </div>
-
-
-        <!-- =================================================
-             EXCEL UPLOAD
-        ================================================== -->
-
-        <div class="upload-area">
-
-            <form id="uploadForm"
-                  enctype="multipart/form-data">
-
-                <label>
-                    Upload Case Master Data
-                </label>
-
-                <input
-                    type="file"
-                    id="file"
-                    name="file"
-                    accept=".xlsx,.xls,.csv"
-                    required
-                >
-
-                <button
-                    type="submit"
-                    id="uploadButton"
-                    class="button"
-                    style="margin-top:12px;">
-
-                    Upload Data
-
-                </button>
-
-            </form>
-
-
-            <div
-                id="uploadStatus"
-                class="status">
-
-            </div>
-
-        </div>
-
-
-        <!-- =================================================
-             CASE REASON
-        ================================================== -->
-
-        <div class="field">
-
-            <label>
-                Case Reason
-            </label>
-
-            <select id="caseReason">
-
-                <option value="">
-                    --None--
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <!-- =================================================
-             VEHICLE TYPE
-        ================================================== -->
-
-        <div class="field">
-
-            <label>
-                Vehicle Type
-            </label>
-
-            <select id="vehicleType">
-
-                <option value="">
-                    --None--
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <!-- =================================================
-             SUB CASE REASON
-        ================================================== -->
-
-        <div class="field">
-
-            <label>
-                Sub Case Reason
-            </label>
-
-            <select id="subCase">
-
-                <option value="">
-                    --None--
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <!-- =================================================
-             RESULT
-        ================================================== -->
-
-        <div class="result">
-
-            <b>
-                Selected Values
-            </b>
-
-            <p id="result">
-
-                No selection
-
-            </p>
-
-        </div>
-
-
-        <hr class="divider">
-
-
-        <!-- =================================================
-             MANUAL ENTRY
-        ================================================== -->
-
-        <div class="section-title">
-
-            Add / Enter Values Manually
-
-        </div>
-
-
-        <!-- CASE REASON -->
-
-        <div class="field">
-
-            <label>
-                Case Reason
-            </label>
-
-            <input
-                id="manualCase"
-                type="text"
-                placeholder="Enter Case Reason"
-            >
-
-        </div>
-
-
-        <!-- VEHICLE TYPE -->
-
-        <div class="field">
-
-            <label>
-                Vehicle Type
-            </label>
-
-            <input
-                id="manualVehicle"
-                type="text"
-                placeholder="Enter Vehicle Type"
-            >
-
-        </div>
-
-
-        <!-- SUB CASE -->
-
-        <div class="field">
-
-            <label>
-                Sub Case Reason
-            </label>
-
-            <input
-                id="manualSub"
-                type="text"
-                placeholder="Enter Sub Case Reason"
-            >
-
-        </div>
-
-
-        <!-- ADD BUTTON -->
-
-        <div>
-
-            <button
-                id="addRecord"
-                class="button">
-
-                Add Record
-
-            </button>
-
-
-            <span
-                id="addStatus"
-                class="status"
-                style="margin-left:12px;">
-
-            </span>
-
-        </div>
-
-    </div>
+    <p id="status"></p>
 
 </div>
 
+<div>
 
+    <label>Case Reason</label>
 
-<!-- =====================================================
-     JAVASCRIPT
-====================================================== -->
+    <select id="caseReason">
+        <option value="">--None--</option>
+    </select>
+
+    <label>Vehicle Type</label>
+
+    <select id="vehicleType">
+        <option value="">--None--</option>
+    </select>
+
+    <label>Sub Case Reason</label>
+
+    <select id="subCase">
+        <option value="">--None--</option>
+    </select>
+
+</div>
+
+<div class="card">
+
+    <h2>Selected Values</h2>
+
+    <p id="selectedValues">
+        No Selection
+    </p>
+
+</div>
 
 <script>
 
+let excelData = [];
 
-/* =====================================================
-   GLOBAL DATA
-====================================================== */
+function loadExcel() {
 
-let data = [];
+    const file =
+        document.getElementById("fileInput").files[0];
 
+    if (!file) {
+        alert("Select Excel File");
+        return;
+    }
 
-/* =====================================================
-   GET ELEMENT
-====================================================== */
+    const reader = new FileReader();
 
-function getElement(id) {
+    reader.onload = function(e) {
 
-    return document.getElementById(id);
+        const data = new Uint8Array(e.target.result);
 
+        const workbook =
+            XLSX.read(data, { type: 'array' });
+
+        const sheet =
+            workbook.Sheets[workbook.SheetNames[0]];
+
+        excelData =
+            XLSX.utils.sheet_to_json(sheet);
+
+        populateCaseReason();
+
+        document.getElementById("status").innerHTML =
+            "Data loaded successfully";
+    };
+
+    reader.readAsArrayBuffer(file);
 }
 
+function populateCaseReason() {
 
-/* =====================================================
-   RESET DROPDOWN
-====================================================== */
+    let caseDropdown =
+        document.getElementById("caseReason");
 
-function resetDropdown(id) {
-
-    const select = getElement(id);
-
-    select.innerHTML =
+    caseDropdown.innerHTML =
         '<option value="">--None--</option>';
 
-}
+    let cases =
+        [...new Set(excelData.map(x => x["Case Reason"]))];
 
+    cases.forEach(c => {
 
-/* =====================================================
-   LOAD DATA FROM FLASK
-====================================================== */
-
-async function loadData() {
-
-    try {
-
-const response = await fetch("/data");
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Unable to load data"
-            );
-
-        }
-
-        data = await response.json();
-
-        populateCaseReasons();
-
-    }
-
-    catch (error) {
-
-        console.error(error);
-
-        const status =
-            getElement("uploadStatus");
-
-        status.textContent =
-            "Unable to load case data.";
-
-        status.className =
-            "status error";
-
-    }
-
-}
-
-
-/* =====================================================
-   POPULATE CASE REASON
-====================================================== */
-
-function populateCaseReasons() {
-
-    const select =
-        getElement("caseReason");
-
-    resetDropdown("caseReason");
-
-
-    const values = [
-
-        ...new Set(
-
-            data.map(
-                item => item.case_reason
-            )
-
-        )
-
-    ]
-
-    .filter(Boolean)
-
-    .sort();
-
-
-    values.forEach(value => {
-
-        const option =
+        let opt =
             document.createElement("option");
 
-        option.value = value;
+        opt.value = c;
+        opt.text = c;
 
-        option.textContent = value;
-
-        select.appendChild(option);
-
+        caseDropdown.appendChild(opt);
     });
-
 }
 
+document
+.getElementById("caseReason")
+.addEventListener("change", function () {
 
-/* =====================================================
-   POPULATE VEHICLE TYPE
-====================================================== */
+    const caseReason = this.value;
 
-function populateVehicleTypes() {
+    const vehicleDropdown =
+        document.getElementById("vehicleType");
 
-    const caseReason =
-        getElement("caseReason").value;
+    vehicleDropdown.innerHTML =
+        '<option value="">--None--</option>';
 
+    const vehicleRequiredCases = [
 
-    resetDropdown("vehicleType");
+        "Technical inquiry",
+        "Diagnostics & Software",
+        "Cross Reference / Replacement"
 
-    resetDropdown("subCase");
+    ];
 
+    let rows;
 
-    if (!caseReason) {
+    if (vehicleRequiredCases.includes(caseReason)) {
 
-        showResult();
+        rows =
+          excelData.filter(
+            x => x["Case Reason"] === caseReason
+          );
 
-        return;
+        let vehicles = [
+          ...new Set(rows.map(
+            x => x["Vehicle Type"]
+          ))
+        ];
 
+        vehicles.forEach(v => {
+
+            let opt =
+              document.createElement("option");
+
+            opt.value = v;
+            opt.text = v;
+
+            vehicleDropdown.appendChild(opt);
+        });
+    }
+    else {
+
+        populateSubCaseWithoutVehicle(caseReason);
     }
 
+    updateSelection();
+});
 
-    const values = [
+document
+.getElementById("vehicleType")
+.addEventListener("change", function () {
 
-        ...new Set(
+    let caseReason =
+      document.getElementById("caseReason").value;
 
-            data
+    let vehicle =
+      this.value;
 
-                .filter(item =>
+    let subDropdown =
+      document.getElementById("subCase");
 
-                    item.case_reason === caseReason
+    subDropdown.innerHTML =
+      '<option value="">--None--</option>';
 
-                )
+    let rows =
+      excelData.filter(
+        x =>
+        x["Case Reason"] === caseReason &&
+        x["Vehicle Type"] === vehicle
+      );
 
-                .map(item =>
+    let subs =
+      [...new Set(rows.map(
+        x => x["Sub Case Reason"]
+      ))];
 
-                    item.vehicle_type
+    subs.forEach(s => {
 
-                )
+        let opt =
+          document.createElement("option");
 
-        )
+        opt.value = s;
+        opt.text = s;
 
-    ]
-
-    .filter(Boolean)
-
-    .sort();
-
-
-    const select =
-        getElement("vehicleType");
-
-
-    values.forEach(value => {
-
-        const option =
-            document.createElement("option");
-
-        option.value = value;
-
-        option.textContent = value;
-
-        select.appendChild(option);
-
+        subDropdown.appendChild(opt);
     });
 
+    updateSelection();
+});
+
+function populateSubCaseWithoutVehicle(caseReason) {
+
+    let subDropdown =
+      document.getElementById("subCase");
+
+    subDropdown.innerHTML =
+      '<option value="">--None--</option>';
+
+    let rows =
+      excelData.filter(
+        x => x["Case Reason"] === caseReason
+      );
+
+    let subs =
+      [...new Set(rows.map(
+        x => x["Sub Case Reason"]
+      ))];
+
+    subs.forEach(s => {
+
+        let opt =
+          document.createElement("option");
+
+        opt.value = s;
+        opt.text = s;
+
+        subDropdown.appendChild(opt);
+    });
 }
 
+document
+.getElementById("subCase")
+.addEventListener("change", updateSelection);
 
-/* =====================================================
-   POPULATE SUB CASE
-====================================================== */
-
-function populateSubCases() {
+function updateSelection() {
 
     const caseReason =
-        getElement("caseReason").value;
-
+        document.getElementById("caseReason").value;
 
     const vehicle =
-        getElement("vehicleType").value;
-
-
-    resetDropdown("subCase");
-
-
-    if (!caseReason || !vehicle) {
-
-        showResult();
-
-        return;
-
-    }
-
-
-    const values = [
-
-        ...new Set(
-
-            data
-
-                .filter(item =>
-
-                    item.case_reason === caseReason &&
-
-                    item.vehicle_type === vehicle
-
-                )
-
-                .map(item =>
-
-                    item.sub_case
-
-                )
-
-        )
-
-    ]
-
-    .filter(Boolean)
-
-    .sort();
-
-
-    const select =
-        getElement("subCase");
-
-
-    values.forEach(value => {
-
-        const option =
-            document.createElement("option");
-
-        option.value = value;
-
-        option.textContent = value;
-
-        select.appendChild(option);
-
-    });
-
-}
-
-
-/* =====================================================
-   SHOW SELECTED VALUES
-====================================================== */
-
-function showResult() {
-
-    const caseReason =
-        getElement("caseReason").value;
-
-
-    const vehicle =
-        getElement("vehicleType").value;
-
+        document.getElementById("vehicleType").value;
 
     const subCase =
-        getElement("subCase").value;
+        document.getElementById("subCase").value;
 
+    document.getElementById("selectedValues")
+        .innerHTML =
 
-    getElement("result").innerHTML =
-
-        "<b>Case Reason:</b> " +
-
-        escapeHtml(
-            caseReason || "--None--"
-        ) +
-
-        "<br>" +
-
-        "<b>Vehicle Type:</b> " +
-
-        escapeHtml(
-            vehicle || "--None--"
-        ) +
-
-        "<br>" +
-
-        "<b>Sub Case Reason:</b> " +
-
-        escapeHtml(
-            subCase || "--None--"
-        );
-
+        "<b>Case Reason:</b> " + caseReason +
+        "<br><b>Vehicle Type:</b> " + vehicle +
+        "<br><b>Sub Case Reason:</b> " + subCase;
 }
-
-
-/* =====================================================
-   HTML ESCAPE
-====================================================== */
-
-function escapeHtml(value) {
-
-    return String(value)
-
-        .replaceAll("&", "&amp;")
-
-        .replaceAll("<", "&lt;")
-
-        .replaceAll(">", "&gt;")
-
-        .replaceAll('"', "&quot;")
-
-        .replaceAll("'", "&#039;");
-
-}
-
-
-/* =====================================================
-   CASE REASON CHANGE
-====================================================== */
-
-getElement("caseReason")
-
-    .addEventListener(
-
-        "change",
-
-        function() {
-
-            populateVehicleTypes();
-
-            showResult();
-
-        }
-
-    );
-
-
-/* =====================================================
-   VEHICLE TYPE CHANGE
-====================================================== */
-
-getElement("vehicleType")
-
-    .addEventListener(
-
-        "change",
-
-        function() {
-
-            populateSubCases();
-
-            showResult();
-
-        }
-
-    );
-
-
-/* =====================================================
-   SUB CASE CHANGE
-====================================================== */
-
-getElement("subCase")
-
-    .addEventListener(
-
-        "change",
-
-        function() {
-
-            showResult();
-
-        }
-
-    );
-
-
-/* =====================================================
-   UPLOAD EXCEL / CSV
-====================================================== */
-
-getElement("uploadForm")
-
-    .addEventListener(
-
-        "submit",
-
-        async function(event) {
-
-            event.preventDefault();
-
-
-            const fileInput =
-                getElement("file");
-
-
-            const file =
-                fileInput.files[0];
-
-
-            const status =
-                getElement("uploadStatus");
-
-
-            const button =
-                getElement("uploadButton");
-
-
-            if (!file) {
-
-                status.textContent =
-                    "Please select a file.";
-
-                status.className =
-                    "status error";
-
-                return;
-
-            }
-
-
-            const formData =
-                new FormData();
-
-
-            formData.append(
-                "file",
-                file
-            );
-
-
-            status.textContent =
-                "Uploading...";
-
-
-            status.className =
-                "status";
-
-
-            button.disabled = true;
-
-
-            try {
-
-                const response =
-                    await fetch(
-
-                        "/upload",
-
-                        {
-
-                            method: "POST",
-
-                            body: formData
-
-                        }
-
-                    );
-
-
-                const result =
-                    await response.json();
-
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        result.message ||
-                        "Upload failed"
-                    );
-
-                }
-
-
-                status.textContent =
-                    result.message;
-
-
-                status.className =
-                    result.success
-
-                        ? "status"
-
-                        : "status error";
-
-
-                if (result.success) {
-
-                    await loadData();
-
-
-                    getElement(
-                        "caseReason"
-                    ).value = "";
-
-
-                    resetDropdown(
-                        "vehicleType"
-                    );
-
-
-                    resetDropdown(
-                        "subCase"
-                    );
-
-
-                    showResult();
-
-                }
-
-            }
-
-            catch (error) {
-
-                console.error(error);
-
-                status.textContent =
-                    error.message ||
-                    "Upload failed.";
-
-                status.className =
-                    "status error";
-
-            }
-
-            finally {
-
-                button.disabled = false;
-
-            }
-
-        }
-
-    );
-
-
-/* =====================================================
-   ADD MANUAL RECORD
-====================================================== */
-
-getElement("addRecord")
-
-    .addEventListener(
-
-        "click",
-
-        async function(event) {
-
-            event.preventDefault();
-
-
-            const caseReason =
-                getElement(
-                    "manualCase"
-                ).value.trim();
-
-
-            const vehicle =
-                getElement(
-                    "manualVehicle"
-                ).value.trim();
-
-
-            const subCase =
-                getElement(
-                    "manualSub"
-                ).value.trim();
-
-
-            const status =
-                getElement(
-                    "addStatus"
-                );
-
-
-            if (
-
-                !caseReason &&
-
-                !vehicle &&
-
-                !subCase
-
-            ) {
-
-                status.textContent =
-                    "Please enter at least one value.";
-
-                status.className =
-                    "status error";
-
-                return;
-
-            }
-
-
-            status.textContent =
-                "Saving...";
-
-            status.className =
-                "status";
-
-
-            try {
-
-                const response =
-                    await fetch(
-
-                        "/add_record",
-
-                        {
-
-                            method: "POST",
-
-                            headers: {
-
-                                "Content-Type":
-                                    "application/json"
-
-                            },
-
-                            body: JSON.stringify({
-
-                                case_reason:
-                                    caseReason,
-
-                                vehicle_type:
-                                    vehicle,
-
-                                sub_case:
-                                    subCase
-
-                            })
-
-                        }
-
-                    );
-
-
-                const result =
-                    await response.json();
-
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        result.message ||
-                        "Failed to save record"
-                    );
-
-                }
-
-
-                status.textContent =
-                    result.message;
-
-
-                status.className =
-                    result.success
-
-                        ? "status"
-
-                        : "status error";
-
-
-                if (result.success) {
-
-                    getElement(
-                        "manualCase"
-                    ).value = "";
-
-
-                    getElement(
-                        "manualVehicle"
-                    ).value = "";
-
-
-                    getElement(
-                        "manualSub"
-                    ).value = "";
-
-
-                    await loadData();
-
-                }
-
-            }
-
-            catch (error) {
-
-                console.error(error);
-
-                status.textContent =
-                    error.message ||
-                    "Error saving record.";
-
-                status.className =
-                    "status error";
-
-            }
-
-        }
-
-    );
-
-
-/* =====================================================
-   INITIAL LOAD
-====================================================== */
-
-document.addEventListener(
-
-    "DOMContentLoaded",
-
-    function() {
-
-        loadData();
-
-    }
-
-);
 
 </script>
 
